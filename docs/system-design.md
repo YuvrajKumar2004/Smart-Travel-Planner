@@ -1,16 +1,35 @@
-# System Design
+# Smart Travel Planner – System Design
 
 ## Overview
-Smart Travel Planner follows a layered architecture with clear separation of concerns.
+Smart Travel Planner is a system that generates optimized travel itineraries
+based on user preferences, budget, weather conditions, and pilgrimage needs.
 
-## Layers
-- Controller: Exposes REST endpoints.
-- Service: Implements business logic.
-- Repository: Handles persistence.
-- Entity: Maps domain tables.
-- DTO: API request/response models.
+## Core Modules
+- Trip Planning Engine
+- Budget Validator
+- Weather Analyzer
+- Temple Crowd Analyzer
+- Recommendation Engine
+- Route Optimizer
+- Expense Split Engine
 
-## Non-Functional Goals
-- Maintainable service boundaries
-- Easy testability of business logic
-- Extensible architecture for recommendations and guides
+## System Flow
+User Input
+ ↓
+Trip Planning Engine
+ ↓
+Budget Validation
+ ↓
+Weather Analysis
+ ↓
+Place Recommendation
+ ↓
+Route Optimization
+ ↓
+Generate Itinerary
+ ↓
+Trip Execution
+ ↓
+Expense Tracking
+ ↓
+Trip Archiving
