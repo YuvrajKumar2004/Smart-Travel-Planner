@@ -1,4 +1,5 @@
 # Database Schema
+
 ## Users
 id
 name
