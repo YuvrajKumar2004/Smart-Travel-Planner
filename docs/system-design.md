@@ -2,7 +2,6 @@
 ## Overview
 Smart Travel Planner is a system that generates optimized travel itineraries
 based on user preferences, budget, weather conditions, and pilgrimage needs.
-
 ## Core Modules
 - Trip Planning Engine
 - Budget Validator
