@@ -1,202 +1,156 @@
-Base URL
-/api/v1
+# API Specification
 
-All endpoints are prefixed with /api/v1.
+Base URL: `/`
+Authentication: Bearer token for protected endpoints.
 
-Authentication APIs
-Register User
-POST /api/v1/auth/signup
+## 1. User Authentication
 
-Request Body
-
+### POST `/auth/signup`
+Request:
+```json
 {
-  "name": "Yuvraj Kumar",
-  "email": "yuvraj@email.com",
-  "password": "password123"
+  "fullName": "Aarav Mehta",
+  "email": "aarav@example.com",
+  "password": "StrongPass123"
 }
-
-Response
-
+```
+Response:
+```json
 {
-  "message": "User registered successfully"
+  "userId": 1,
+  "fullName": "Aarav Mehta",
+  "email": "aarav@example.com",
+  "token": "<jwt-token>",
+  "tokenType": "Bearer"
 }
-Login User
-POST /api/v1/auth/login
+```
 
-Request Body
-
+### POST `/auth/login`
+Request:
+```json
 {
-  "email": "yuvraj@email.com",
-  "password": "password123"
+  "email": "aarav@example.com",
+  "password": "StrongPass123"
 }
+```
+Response: same structure as signup.
 
-Response
+## 2. Trip Management
 
+### POST `/trips`
+Request:
+```json
 {
-  "token": "jwt_token"
+  "name": "Goa Escape",
+  "destination": "Goa",
+  "startDate": "2026-06-20",
+  "endDate": "2026-06-25",
+  "createdBy": 1
 }
-User APIs
-Get Current User
-GET /api/v1/users/me
-
-Returns details of the authenticated user.
-
-Trip APIs
-Create Trip
-POST /api/v1/trips
-
-Request Body
-
+```
+Response:
+```json
 {
-  "tripName": "Varanasi Trip",
-  "currentLocation": "Delhi",
-  "destination": "Varanasi",
-  "days": 3,
-  "peopleCount": 4,
-  "budget": 15000,
-  "tripType": "PILGRIMAGE"
+  "id": 10,
+  "name": "Goa Escape",
+  "destination": "Goa",
+  "startDate": "2026-06-20",
+  "endDate": "2026-06-25",
+  "createdBy": 1,
+  "members": [
+    {
+      "userId": 1,
+      "fullName": "Aarav Mehta",
+      "email": "aarav@example.com",
+      "role": "OWNER"
+    }
+  ]
 }
+```
 
-Response
+### GET `/trips/{id}`
+Returns trip details with members.
 
+### GET `/users/{userId}/trips`
+Returns all trips where the user is a member.
+
+### DELETE `/trips/{id}`
+Response: `204 No Content`
+
+### POST `/trips/{tripId}/members`
+Request:
+```json
 {
-  "tripId": 101,
-  "status": "created"
+  "userId": 2,
+  "role": "MEMBER"
 }
-Get Trip Details
-GET /api/v1/trips/{tripId}
+```
 
-Returns full trip details including itinerary and members.
+## 3. Itinerary Management
 
-Get All Trips of User
-GET /api/v1/users/{userId}/trips
-
-Returns all trips created or joined by the user.
-
-Archive Trip
-PUT /api/v1/trips/{tripId}/archive
-
-Marks the trip as archived.
-
-Trip Members APIs
-Add Member to Trip
-POST /api/v1/trips/{tripId}/members
-
-Request
-
+### POST `/itinerary`
+Request:
+```json
 {
-  "userId": 5
+  "tripId": 10,
+  "dayNumber": 1,
+  "activity": "Beach Visit",
+  "location": "Baga Beach",
+  "startTime": "10:00:00",
+  "endTime": "12:00:00"
 }
-Remove Member
-DELETE /api/v1/trips/{tripId}/members/{userId}
-Get Trip Members
-GET /api/v1/trips/{tripId}/members
-Itinerary APIs
-Generate Itinerary
-POST /api/v1/trips/{tripId}/itinerary/generate
+```
 
-Generates a trip itinerary using the trip planning engine.
+### GET `/itinerary/{tripId}`
+Returns all itinerary items for the trip.
 
-Get Itinerary
-GET /api/v1/trips/{tripId}/itinerary
+### PUT `/itinerary/{id}`
+Updates day/activity/location/time.
 
-Returns the day-wise travel plan.
+### DELETE `/itinerary/{id}`
+Response: `204 No Content`
 
-Update Itinerary (Owner Only)
-PUT /api/v1/trips/{tripId}/itinerary
+## 4. Expense Management
 
-Allows the trip owner to modify the itinerary.
-
-Budget APIs
-Budget Feasibility Check
-POST /api/v1/trips/budget-check
-
-Request Body
-
+### POST `/expenses`
+Request:
+```json
 {
-  "destination": "Jaipur",
-  "days": 3,
-  "peopleCount": 2,
-  "budget": 10000
+  "tripId": 10,
+  "paidBy": 1,
+  "amount": 1200.00,
+  "description": "Dinner",
+  "date": "2026-06-20",
+  "splitAmongUserIds": [1, 2]
 }
+```
 
-Response
+### GET `/expenses/{tripId}`
+Response includes `expenses[]` and computed `balances[]`.
 
+## 5. Recommendations
+
+### GET `/recommendations?destination={city}`
+Example:
+`/recommendations?destination=goa`
+
+Response:
+```json
 {
-  "minimumBudgetRequired": 14000,
-  "budgetSufficient": false
+  "destination": "Goa",
+  "attractions": ["Dudhsagar Falls", "Basilica of Bom Jesus", "Baga Beach"],
+  "restaurants": ["Gunpowder", "Pousada by the Beach", "Mum's Kitchen"],
+  "hotels": ["Taj Exotica", "W Goa", "Alila Diwa Goa"]
 }
-Recommendation APIs
-Get Destination Recommendations
-GET /api/v1/recommendations/destinations?location=Delhi
+```
 
-Returns recommended destinations near the user's location.
-
-Get Places for Destination
-GET /api/v1/recommendations/places?destination=Varanasi
-
-Returns attractions or temples for the destination.
-
-Expense APIs
-Add Expense
-POST /api/v1/trips/{tripId}/expenses
-
-Request
-
+## Error Response Format
+```json
 {
-  "amount": 1200,
-  "paidBy": 3,
-  "category": "FOOD",
-  "description": "Dinner"
+  "timestamp": "2026-03-09T12:00:00Z",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Validation failed",
+  "path": "/trips"
 }
-Get Expenses
-GET /api/v1/trips/{tripId}/expenses
-
-Returns all expenses for the trip.
-
-Split Expense
-POST /api/v1/expenses/{expenseId}/split
-
-Splits an expense among trip members.
-
-Get Balance Summary
-GET /api/v1/trips/{tripId}/balances
-
-Shows who owes whom.
-
-Guide APIs
-Get Guides for a Place
-GET /api/v1/guides?place=Varanasi
-
-Returns available local guides for a place.
-
-Weather APIs
-Get Weather Information
-GET /api/v1/weather?city=Varanasi
-
-Weather data can be fetched from services like
-OpenWeather API.
-
-Health Check
-Service Health
-GET /api/v1/health
-
-Used to check if the backend service is running.
-
-Response Format
-
-All responses follow this structure.
-
-Success
-
-{
-  "status": "success",
-  "data": {}
-}
-
-Error
-
-{
-  "status": "error",
-  "message": "Invalid request"
-}
+```

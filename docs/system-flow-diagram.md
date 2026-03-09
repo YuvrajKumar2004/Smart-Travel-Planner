@@ -1,92 +1,12 @@
-﻿# System Flow Diagram
+# System Flow Diagram (Text)
 
-```text
-                        START
-                          │
-                          ▼
-                User Login / Signup
-                          │
-                          ▼
-                     Create Trip
-                          │
-                          ▼
-                 Enter Trip Information
-     (Current Location, Destination, Days,
-      People, Budget, Preferences, Trip Type)
-                          │
-                          ▼
-                 Trip Planning Engine
-                          │
-                          ▼
-                Budget Feasibility Check
-                          │
-              ┌───────────┴───────────┐
-              ▼                       ▼
-        Budget Sufficient?          NO
-              │                      │
-             YES                     ▼
-              │           Suggest Minimum Budget
-              │           or Modify Preferences
-              │                      │
-              └───────────────┬──────┘
-                              ▼
-                        User Decision
-                 (Modify or Continue Plan)
-                              │
-                              ▼
-                       Weather Analyzer
-                              │
-                              ▼
-                     Severe Weather?
-                 ┌────────────┴────────────┐
-                 ▼                         ▼
-                YES                       NO
-                 │                         │
-     Suggest Alternative Time/Location     │
-                 │                         │
-                 └─────────────┬───────────┘
-                               ▼
-                       Trip Type Analyzer
-                 (Tourism / Pilgrimage / Mixed)
-                               │
-                               ▼
-                     Temple Crowd Analyzer
-                               │
-                               ▼
-                   Place Recommendation Engine
-                               │
-                               ▼
-                       Route Optimization
-                 (Minimize Travel Distance)
-                               │
-                               ▼
-                      Generate Itinerary
-                   (Day-wise Travel Plan)
-                               │
-                               ▼
-                 Suggest Hotels / Transport
-                               │
-                               ▼
-                     Suggest Local Guides
-                               │
-                               ▼
-                      Booking Assistance
-                               │
-                               ▼
-                        Trip Execution
-                               │
-                               ▼
-                         Expense Tracker
-                               │
-                               ▼
-                       Expense Split Engine
-                               │
-                               ▼
-                          Trip Finished
-                               │
-                               ▼
-                           Archive Trip
-                               │
-                               ▼
-                               END
-```
+1. Client calls `/auth/signup` or `/auth/login`.
+2. Backend validates credentials, hashes password (signup), and returns JWT.
+3. Client sends JWT in `Authorization: Bearer <token>` for protected APIs.
+4. `JwtAuthenticationFilter` validates token and sets authenticated context.
+5. User creates trip via `/trips`; owner entry is created in `trip_members`.
+6. Members can be added to trip via `/trips/{tripId}/members`.
+7. Itinerary items are managed through `/itinerary` endpoints.
+8. Expenses are added via `/expenses`; splits are persisted in `expense_splits`.
+9. Expense summary endpoint computes per-user balances from expenses and splits.
+10. Recommendations are fetched via `/recommendations?destination=...`.

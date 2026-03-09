@@ -1,47 +1,114 @@
 # Smart Travel Planner
 
-## Project Overview
-Smart Travel Planner is a collaborative trip planning platform where users can create trips, build itineraries, split expenses, and get place recommendations.
+Smart Travel Planner is a production-style Spring Boot backend for planning group trips, managing itineraries, splitting expenses, and fetching destination recommendations.
 
-## Features
-- User authentication and signup
-- Trip creation and member management
-- Itinerary planning
-- Expense tracking and split management
-- Budget feasibility checks
-- Recommendation-ready API structure
+## Backend Tech Stack
+- Java 17
+- Spring Boot 3
+- Spring Security + JWT
+- Spring Data JPA (Hibernate)
+- MySQL
+- Maven
+- OpenAPI (Swagger)
+- Lombok
 
-## System Architecture
-- Layered Spring Boot backend (`controller -> service -> repository -> database`)
-- DTO-based API contract to avoid exposing entities directly
-- SQL schema initialization script for local development
+## Folder Structure
+```text
+backend/
+  src/main/java/com/travelplanner/
+    config/
+      AppConfig.java
+      AppUserDetailsService.java
+      JwtAuthenticationFilter.java
+      SecurityConfig.java
+      SwaggerConfig.java
+    controller/
+      AuthController.java
+      TripController.java
+      ItineraryController.java
+      ExpenseController.java
+      RecommendationController.java
+    dto/
+      ErrorResponse.java
+      auth/
+      trip/
+      itinerary/
+      expense/
+      recommendation/
+    exception/
+      BadRequestException.java
+      ResourceNotFoundException.java
+      UnauthorizedException.java
+      GlobalExceptionHandler.java
+    model/
+      User.java
+      Trip.java
+      TripMember.java
+      ItineraryItem.java
+      Expense.java
+      ExpenseSplit.java
+    repository/
+      UserRepository.java
+      TripRepository.java
+      TripMemberRepository.java
+      ItineraryRepository.java
+      ExpenseRepository.java
+      ExpenseSplitRepository.java
+    service/
+      AuthService.java
+      TripService.java
+      ItineraryService.java
+      ExpenseService.java
+      RecommendationService.java
+    util/
+      JwtUtil.java
+    TravelPlannerApplication.java
+  src/main/resources/
+    application.properties
+  pom.xml
 
-## Tech Stack
-- Java
-- Spring Boot
-- REST APIs
-- MySQL / PostgreSQL (configurable)
+docs/
+  api-specification.md
+  database-schema.md
+  system-design.md
+  system-flow-diagram.md
 
-## Database Schema
-High-level schema is documented in `docs/database-schema.md` and bootstrapped in `scripts/database-init.sql`.
+scripts/
+  database-init.sql
+```
 
-## API Endpoints
-Sample endpoints:
-- `POST /auth/signup`
-- `POST /trips`
-- `GET /trips/{id}`
-- `POST /expenses`
+## Core Features
+- User signup and login with BCrypt password hashing and JWT token generation
+- Trip creation, retrieval, listing by user, deletion, and member management
+- Day-wise itinerary CRUD for each trip
+- Shared expense tracking with split calculation and user balance summary
+- Destination recommendations (attractions, restaurants, hotels)
 
-Detailed endpoint documentation is in `docs/api-specification.md`.
+## API Docs
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- OpenAPI JSON: `http://localhost:8080/api-docs`
 
-## How to Run
+## Run Locally
 1. Install Java 17+ and Maven.
-2. Go to `backend`.
-3. Run: `mvn spring-boot:run`
-4. Initialize DB with `scripts/database-init.sql`.
+2. Create MySQL DB (or let URL auto-create): `smart_travel_planner`.
+3. Update credentials in `backend/src/main/resources/application.properties`.
+4. Set a secure JWT secret (`app.jwt.secret`) with at least 32 characters.
+5. Start backend:
+```bash
+cd backend
+mvn spring-boot:run
+```
 
-## Future Improvements
-- Frontend web app
-- Real recommendation engine integration
-- Real-time collaboration features
-- Cloud deployment + CI/CD
+## Security Notes
+- All routes except `/auth/**` and Swagger docs require a valid Bearer token.
+- Token is returned from `/auth/signup` and `/auth/login`.
+
+## Deliverables Coverage
+- Complete layered folder structure
+- Normalized database schema
+- Entity (model) classes with JPA relationships
+- Repository interfaces
+- Service layer business logic
+- REST controller APIs
+- Sample request/response documentation
+- Architecture + system flow documentation
