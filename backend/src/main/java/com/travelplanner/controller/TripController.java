@@ -38,11 +38,13 @@ public class TripController {
         return ResponseEntity.ok(tripService.getTrip(id));
     }
 
+    
     @GetMapping("/users/{userId}/trips")
     @Operation(summary = "Get trips for a user")
     public ResponseEntity<List<TripResponse>> getTripsForUser(@PathVariable Long userId) {
         return ResponseEntity.ok(tripService.getTripsForUser(userId));
     }
+
 
     @DeleteMapping("/trips/{id}")
     @Operation(summary = "Delete a trip")
@@ -50,6 +52,8 @@ public class TripController {
         tripService.deleteTrip(id);
         return ResponseEntity.noContent().build();
     }
+
+
 
     @PostMapping("/trips/{tripId}/members")
     @Operation(summary = "Add a member to a trip")
