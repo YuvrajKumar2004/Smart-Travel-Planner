@@ -53,8 +53,6 @@ public class TripController {
         return ResponseEntity.noContent().build();
     }
 
-
-
     @PostMapping("/trips/{tripId}/members")
     @Operation(summary = "Add a member to a trip")
     public ResponseEntity<TripResponse> addTripMember(@PathVariable Long tripId,
