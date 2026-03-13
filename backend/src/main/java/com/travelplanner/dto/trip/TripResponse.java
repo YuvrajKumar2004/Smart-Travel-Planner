@@ -6,9 +6,11 @@ import lombok.Builder;
 import lombok.Value;
 
 
+
 @Value
 @Builder
-public class TripResponse {
+public class TripResponse 
+{
     Long id;
     String name;
     String destination;
